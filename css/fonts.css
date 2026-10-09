@@ -1,0 +1,55 @@
+/* Bengali type, served from this origin. Noto Sans Bengali (UI) + Noto Serif Bengali (display).
+   Both are OFL-licensed; subset to the Bengali block + Latin. No third-party requests at runtime. */
+
+/* Noto Sans Bengali — Bengali subset */
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/noto-sans-bengali-bengali-400.woff2") format("woff2");
+  unicode-range: U+0980-09FF, U+200C-200D, U+2018-201D, U+2013-2014, U+00B7, U+2022;
+}
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/noto-sans-bengali-bengali-700.woff2") format("woff2");
+  unicode-range: U+0980-09FF, U+200C-200D, U+2018-201D, U+2013-2014, U+00B7, U+2022;
+}
+/* Noto Sans Bengali — Latin subset (digits, punctuation, the occasional Latin word) */
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/noto-sans-bengali-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+2018-201D, U+2013-2014, U+00B7, U+2022;
+}
+@font-face {
+  font-family: "Noto Sans Bengali";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/noto-sans-bengali-latin-700.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+2018-201D, U+2013-2014, U+00B7, U+2022;
+}
+
+/* Noto Serif Bengali — display headings */
+@font-face {
+  font-family: "Noto Serif Bengali";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/noto-serif-bengali-bengali-700.woff2") format("woff2");
+  unicode-range: U+0980-09FF, U+200C-200D, U+2018-201D, U+2013-2014;
+}
+@font-face {
+  font-family: "Noto Serif Bengali";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/noto-serif-bengali-latin-700.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+2018-201D, U+2013-2014;
+}

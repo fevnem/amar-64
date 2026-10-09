@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>আমার ৬৪ — ৬৪ জেলার ভ্রমণ খাতা</title>
+  <meta name="description" content="বাংলাদেশের ৬৪ জেলার ম্যাপে আপনার যাওয়া জেলাগুলো দাগিয়ে রাখুন, আর সেটি ছবি, SVG বা পোস্টার হিসেবে ডাউনলোড করুন।">
+  <meta name="theme-color" content="#f6efe1">
+  <meta property="og:title" content="আমার ৬৪">
+  <meta property="og:description" content="৬৪ জেলার ভ্রমণ খাতা — দাগ দিন, হিসাব দেখুন, পোস্টার নামান।">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/og.png">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#map">ম্যাপে যান</a>
+
+  <header class="masthead">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M6 10h36v28H6z" fill="none" stroke="currentColor" stroke-width="2.2"/>
+        <path d="M6 18h36M6 26h36" stroke="currentColor" stroke-width="1.4" opacity=".45"/>
+        <path d="M20 4v40" stroke="currentColor" stroke-width="2.4" opacity=".75"/>
+      </svg>
+      <div>
+        <h1 class="title">আমার ৬৪</h1>
+        <p class="tagline">৬৪ জেলার ভ্রমণ খাতা — যেখানে গেছেন, সেখানে দাগ</p>
+      </div>
+    </div>
+
+    <div class="masthead-actions">
+      <div class="segmented" role="group" aria-label="নিশানা">
+        <input type="radio" name="mode" id="mode-visited" value="visited" checked>
+        <label for="mode-visited"><span class="dot dot-visited" aria-hidden="true"></span>গেছি</label>
+        <input type="radio" name="mode" id="mode-wish" value="wish">
+        <label for="mode-wish"><span class="dot dot-wish" aria-hidden="true"></span>যেতে চাই</label>
+      </div>
+      <button class="btn btn-quiet" id="theme-toggle" type="button" aria-live="polite">রাতের ম্যাপ</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="map-card" aria-labelledby="map-h">
+      <h2 class="section-h" id="map-h">ম্যাপ</h2>
+
+      <div class="legend" aria-label="নিশানার ব্যাখ্যা">
+        <span class="lg"><i class="sw sw-visited"></i>গেছি — লাল সুতো</span>
+        <span class="lg"><i class="sw sw-wish"></i>যেতে চাই</span>
+        <span class="lg"><i class="sw sw-none"></i>দাগ নেই</span>
+      </div>
+
+      <div class="map-wrap" id="map">
+        <svg id="bd-map" class="bd-map" viewBox="0 0 1000 1381" role="img"
+             aria-label="বাংলাদেশের ৬৪ জেলার ম্যাপ">
+          <g id="districts"></g>
+          <g id="labels" class="labels" aria-hidden="true"></g>
+        </svg>
+        <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
+        <p class="map-hint">জেলায় ক্লিক করুন — আবার ক্লিক করলে দাগ মুছে যাবে। কীবোর্ডে তীর চিহ্ন দিয়ে ঘোরা যায়, এন্টার দিয়ে দাগ দেওয়া যায়।</p>
+      </div>
+
+      <details class="about-box">
+        <summary>এই খাতা কী?</summary>
+        <p id="about-text"></p>
+        <ul class="tips" id="tips"></ul>
+      </details>
+
+
+    <aside class="rail">
+      <section class="panel stats" aria-labelledby="stats-h">
+        <h2 class="section-h" id="stats-h">হিসাব</h2>
+        <p class="bigstat"><span id="stat-count">০</span><span class="of">/৬৪</span></p>
+        <p class="rank" id="stat-rank">—</p>
+        <p class="empty" id="stat-empty" hidden></p>
+        <dl class="stat-list">
+          <div><dt>দেশের আয়তন</dt><dd><span id="stat-area">০</span>%</dd></div>
+          <div><dt>বিভাগ শেষ</dt><dd><span id="stat-div">০</span>/৮</dd></div>
+          <div><dt>যেতে চাই</dt><dd><span id="stat-wish">০</span> জেলা</dd></div>
+        </dl>
+        <div class="seals" id="seals" aria-label="বিভাগের সিল"></div>
+      </section>
+
+      <section class="panel divisions" aria-labelledby="div-h">
+        <h2 class="section-h" id="div-h">বিভাগ</h2>
+        <ul class="div-list" id="div-list"></ul>
+      </section>
+
+      <section class="panel find" aria-labelledby="find-h">
+        <h2 class="section-h" id="find-h">খুঁজুন</h2>
+        <label class="sr-only" for="search">জেলা খুঁজুন</label>
+        <input id="search" type="search" list="district-names" placeholder="জেলার নাম লিখুন…" autocomplete="off">
+        <datalist id="district-names"></datalist>
+      </section>
+
+      <section class="panel actions" aria-labelledby="act-h">
+        <h2 class="section-h" id="act-h">দাগের কাজ</h2>
+        <div class="btn-row">
+          <button class="btn" id="btn-share" type="button">লিংক কপি</button>
+          <button class="btn" id="btn-undo" type="button">শেষ কাজ ফেরান</button>
+          <button class="btn" id="btn-clear" type="button">সব মুছুন</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-quiet" id="btn-json" type="button">JSON নামান</button>
+          <label class="btn btn-quiet" for="file-json">JSON আপলোড</label>
+          <input id="file-json" type="file" accept="application/json" hidden>
+        </div>
+        <p class="copied" id="copied" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel exports" aria-labelledby="exp-h">
+        <h2 class="section-h" id="exp-h">নামিয়ে নিন</h2>
+
+        <div class="exp-row">
+          <div class="exp-head"><span>ছবি (PNG)</span></div>
+          <div class="chips" id="png-size">
+            <button class="chip" data-png="1" type="button">১×</button>
+            <button class="chip is-on" data-png="2" type="button">২×</button>
+            <button class="chip" data-png="3" type="button">৩×</button>
+          </div>
+          <div class="chips" id="png-theme">
+            <button class="chip is-on" data-pngbg="paper" type="button">কাগজ</button>
+            <button class="chip" data-pngbg="night" type="button">রাত</button>
+            <button class="chip" data-pngbg="clear" type="button">স্বচ্ছ</button>
+          </div>
+          <div class="chips" id="png-extra">
+            <button class="chip is-on" data-pngopt="labels" type="button">নাম</button>
+            <button class="chip is-on" data-pngopt="stats" type="button">হিসাব</button>
+          </div>
+          <button class="btn btn-go" id="btn-png" type="button">PNG নামান</button>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-head"><span>ভেক্টর (SVG)</span></div>
+          <button class="btn btn-quiet" id="btn-svg" type="button">SVG নামান</button>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-head"><span>পোস্টার (PDF)</span></div>
+          <div class="chips" id="pdf-size">
+            <button class="chip is-on" data-pdf="a4" type="button">A4</button>
+            <button class="chip" data-pdf="a3" type="button">A3</button>
+          </div>
+          <div class="chips" id="pdf-orient">
+            <button class="chip is-on" data-pdfor="portrait" type="button">খাড়া</button>
+            <button class="chip" data-pdfor="landscape" type="button">আড়াআড়ি</button>
+          </div>
+          <button class="btn btn-go" id="btn-pdf" type="button">PDF নামান</button>
+        </div>
+
+        <div class="exp-row">
+          <div class="exp-head"><span>স্টোরি ও শেয়ার কার্ড</span></div>
+          <div class="btn-row">
+            <button class="btn" id="btn-story" type="button">স্টোরি (৯:১৬)</button>
+            <button class="btn" id="btn-card" type="button">শেয়ার কার্ড</button>
+          </div>
+        </div>
+        <p class="exp-note">সব কিছু আপনার ব্রাউজারেই তৈরি হয় — কোনো সার্ভারে যায় না।</p>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="colophon">
+    <p>ম্যাপ: geoBoundaries (BGD ADM2, CC BY 3.0 IGO) · জেলার নাম ও বিভাগ: bangladesh-geojson (MIT) · ফন্ট: Noto (OFL)</p>
+    <p>আপনার দাগ শুধু আপনার ব্রাউজারে জমা থাকে — লিংক শেয়ার করলে দাগও যায়।</p>
+  </footer>
+
+  <canvas id="work-canvas" hidden></canvas>
+
+  <script src="js/bn.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/export.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="আমার ৬৪ — খাতা ও কাঁথার সুতা">
+  <title>আমার ৬৪</title>
+  <style>
+    .paper  { fill: #f6efe1; }
+    .edge   { fill: none; stroke: #1a2430; stroke-opacity: .18; }
+    .ink    { fill: none; stroke: #1a2430; }
+    .rule   { fill: none; stroke: #1a2430; stroke-opacity: .42; }
+    .thread { fill: none; stroke: #bb3a3a; stroke-linecap: round; stroke-dasharray: 3 2.7; }
+
+    @media (prefers-color-scheme: dark) {
+      .paper  { fill: #131a21; }
+      .edge   { stroke: #ece3d2; stroke-opacity: .22; }
+      .ink    { stroke: #ece3d2; }
+      .rule   { stroke: #ece3d2; }
+      .thread { stroke: #e2775f; }
+    }
+  </style>
+
+  <!-- the khata page -->
+  <rect class="paper" x="1.5" y="1.5" width="45" height="45" rx="9"/>
+  <rect class="edge" x="1.5" y="1.5" width="45" height="45" rx="9" stroke-width="1.2"/>
+
+  <!-- ledger board + sewn spine -->
+  <path class="ink" d="M8.5 10.5h31v26h-31z" stroke-width="2.8"/>
+  <path class="ink" d="M17.5 10.5v26" stroke-width="2.8"/>
+
+  <!-- ruled hairlines on the writing side -->
+  <path class="rule" d="M21.5 18h14M21.5 23.5h14" stroke-width="1.7"/>
+
+  <!-- the red thread: a running kantha stitch across the page -->
+  <path class="thread" d="M8.5 30h31" stroke-width="3"/>
+</svg>

@@ -1,0 +1,353 @@
+/* ==========================================================================
+   আমার ৬৪ — the whole look.
+   A khata (ledger) page: ruled paper, hairline borders, one red thread of
+   stitch across the districts you have been to. Dark mode is a night map.
+   ========================================================================== */
+
+:root {
+  /* paper + ink */
+  --paper:      #f6efe1;
+  --paper-2:    #fffbf2;
+  --paper-3:    #efe6d3;
+  --ink:        #1a2430;
+  --ink-soft:   #5b6673;
+  --rule:       #dbd0b8;
+  --rule-soft:  #e9e0cc;
+
+  /* the mark */
+  --kantha:     #bb3a3a;   /* red thread — visited */
+  --kantha-ink: #8d2626;
+  --indigo:     #1d4e73;   /* wishlist + accents */
+  --indigo-soft:#5b86a8;
+  --marigold:   #dfa032;
+  --leaf:       #1f6f5c;
+  --seal:       #a93a24;
+  --seal-ink:   #fdf6e6;
+
+  /* geometry */
+  --sheet:      1280px;
+  --gap:        22px;
+  --radius:     14px;
+  --radius-sm:  9px;
+  --font-ui:    "Noto Sans Bengali", "Noto Sans", system-ui, sans-serif;
+  --font-disp:  "Noto Serif Bengali", "Noto Sans Bengali", serif;
+
+  /* motion */
+  --t-fast: 120ms;
+  --t:      220ms;
+
+  /* map */
+  --map-bg:     #f9f4e8;
+  --map-water:  #e7eef2;
+  --map-border: #c9bda3;
+  --map-hover:  rgba(29, 78, 115, .16);
+  --kantha-fill: rgba(187, 58, 58, .30);
+}
+
+html.night {
+  --paper:      #131a21;
+  --paper-2:    #18222b;
+  --paper-3:    #1e2a34;
+  --ink:        #ece3d2;
+  --ink-soft:   #a3b0bc;
+  --rule:       #2b3945;
+  --rule-soft:  #222e38;
+  --kantha:     #e2775f;
+  --kantha-ink: #f0a48f;
+  --indigo:     #7fb2d6;
+  --indigo-soft:#4d7c9c;
+  --marigold:   #e8b757;
+  --leaf:       #57a98f;
+  --seal:       #c9502f;
+  --seal-ink:   #18222b;
+  --map-bg:     #16202a;
+  --map-water:  #101820;
+  --map-border: #3a4b59;
+  --map-hover:  rgba(232, 183, 87, .22);
+  --kantha-fill: rgba(226, 119, 95, .34);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* pulp grain + faint ruling, pure gradients */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(0,0,0,.020) 0 1.2px, transparent 1.3px),
+    radial-gradient(circle at 63% 41%, rgba(0,0,0,.016) 0 1.1px, transparent 1.2px),
+    radial-gradient(circle at 86% 78%, rgba(0,0,0,.014) 0 1px, transparent 1.1px),
+    repeating-linear-gradient(0deg, transparent 0 33px, var(--rule-soft) 33px 34px);
+  background-size: 41px 41px, 57px 57px, 73px 73px, 100% 34px;
+  min-height: 100vh;
+}
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 50;
+  background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 0 0 var(--radius-sm) 0;
+}
+.skip:focus { left: 0; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ------------------------------------------------------------------ masthead */
+.masthead {
+  max-width: var(--sheet);
+  margin: 0 auto;
+  padding: 26px var(--gap) 10px;
+  display: flex; flex-wrap: wrap; gap: 16px;
+  align-items: flex-end; justify-content: space-between;
+  border-bottom: 2px solid var(--rule);
+}
+.brand { display: flex; gap: 14px; align-items: center; }
+.brand-mark { width: 44px; height: 44px; color: var(--kantha); flex: none; }
+.title {
+  font-family: var(--font-disp);
+  font-size: clamp(30px, 5.2vw, 46px);
+  line-height: 1.1; margin: 0; letter-spacing: -.01em;
+}
+.tagline { margin: 2px 0 0; color: var(--ink-soft); font-size: 15px; }
+.masthead-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+/* ------------------------------------------------------------------ controls */
+.segmented { display: inline-flex; border: 1.6px solid var(--rule); border-radius: 999px; padding: 3px; background: var(--paper-2); }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented label {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  padding: 7px 15px; border-radius: 999px; font-size: 14.5px; font-weight: 700;
+  color: var(--ink-soft); transition: background var(--t-fast), color var(--t-fast);
+}
+.segmented input:checked + label { background: var(--ink); color: var(--paper); }
+.segmented input:focus-visible + label { outline: 3px solid var(--indigo); outline-offset: 2px; }
+.dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.dot-visited { background: var(--kantha); }
+.dot-wish { background: transparent; border: 2.4px dashed var(--indigo); }
+
+.btn {
+  font: inherit; font-weight: 700; font-size: 14.5px; cursor: pointer;
+  color: var(--ink); background: var(--paper-2);
+  border: 1.6px solid var(--rule); border-radius: 999px;
+  padding: 9px 17px; min-height: 44px;
+  transition: transform var(--t-fast), background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
+}
+.btn:hover { border-color: var(--ink-soft); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+.btn-quiet { color: var(--ink-soft); }
+.btn-go { background: var(--kantha); border-color: var(--kantha-ink); color: #fff5ee; }
+.btn-go:hover { background: var(--kantha-ink); }
+
+.chip {
+  font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; min-height: 38px;
+  padding: 5px 13px; border-radius: 999px; border: 1.4px dashed var(--rule);
+  background: transparent; color: var(--ink-soft);
+  transition: all var(--t-fast);
+}
+.chip.is-on { border-style: solid; border-color: var(--indigo); background: var(--indigo); color: #f4fbff; }
+.chip:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+
+/* ------------------------------------------------------------------ layout */
+.layout {
+  max-width: var(--sheet);
+  margin: 0 auto; padding: var(--gap);
+  display: grid; grid-template-columns: minmax(0, 1fr) 384px; gap: var(--gap);
+  align-items: start;
+}
+
+.map-card, .panel {
+  background: var(--paper-2);
+  border: 1.6px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: 0 1px 0 var(--rule-soft), 0 8px 24px -20px rgba(0,0,0,.35);
+}
+.section-h {
+  font-family: var(--font-disp);
+  font-size: 17px; margin: 0 0 12px; padding-bottom: 8px;
+  border-bottom: 1.4px dashed var(--rule);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ the map */
+.map-wrap { position: relative; }
+.bd-map {
+  display: block; width: 100%; height: auto;
+  background: var(--map-bg);
+  border-radius: var(--radius-sm);
+  touch-action: manipulation;
+}
+/* sea/river tint behind the coast */
+.bd-map { background-image: linear-gradient(180deg, var(--map-water), var(--map-bg) 42%); }
+
+#districts path {
+  fill: var(--paper-3);
+  stroke: var(--map-border);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: fill var(--t), stroke var(--t);
+}
+#districts path:hover { fill: var(--map-hover); }
+#districts path:focus-visible { outline: none; stroke: var(--indigo); stroke-width: 2.2; }
+#districts path.is-visited {
+  fill: url(#stitch);
+  stroke: var(--kantha-ink);
+  stroke-width: 1.5;
+}
+#districts path.is-wish {
+  fill: rgba(29, 78, 115, .07);
+  stroke: var(--indigo);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3;
+}
+#districts path.is-match { stroke: var(--marigold); stroke-width: 2.4; }
+#districts path.is-dim { opacity: .38; }
+
+.labels text {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--map-bg);
+  stroke-width: 3.4;
+  pointer-events: none;
+  text-anchor: middle;
+}
+.labels text.is-hidden { display: none; }
+
+/* the red thread: a running stitch over the districts you have been to */
+.stitch-bg { fill: var(--kantha-fill); }
+.stitch-line { stroke: var(--kantha-ink); stroke-width: 1.35; stroke-dasharray: 3 2.6; stroke-linecap: round; opacity: .82; }
+
+.tip {
+  position: absolute; z-index: 8; pointer-events: none;
+  background: var(--ink); color: var(--paper);
+  border-radius: 8px; padding: 6px 10px; font-size: 13.5px; font-weight: 700;
+  transform: translate(-50%, -128%); white-space: nowrap;
+  box-shadow: 0 6px 18px -8px rgba(0,0,0,.5);
+}
+.map-hint { margin: 10px 2px 0; font-size: 13.5px; color: var(--ink-soft); }
+
+.about-box { margin-top: 12px; border: 1.4px dashed var(--rule); border-radius: var(--radius-sm); padding: 10px 12px; background: var(--paper); }
+.about-box summary { cursor: pointer; font-weight: 700; font-size: 14.5px; color: var(--indigo); min-height: 24px; }
+.about-box summary:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+.about-box p { margin: 8px 0 0; font-size: 14.5px; }
+.tips { margin: 8px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-soft); display: grid; gap: 4px; }
+.empty { margin: -8px 0 12px; font-size: 13.5px; color: var(--ink-soft); }
+.legend { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-soft); }
+.lg { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 22px; height: 13px; border-radius: 3px; display: inline-block; }
+.sw-visited { background: var(--kantha); border: 1.4px solid var(--kantha-ink); }
+.sw-wish { background: rgba(29,78,115,.08); border: 1.6px dashed var(--indigo); }
+.sw-none { background: var(--paper-3); border: 1.4px solid var(--map-border); }
+
+/* ------------------------------------------------------------------ rail */
+.rail { display: grid; gap: var(--gap); }
+.rail .panel + .panel { margin-top: 0; }
+
+.bigstat {
+  font-family: var(--font-disp);
+  font-size: 56px; line-height: 1; margin: 4px 0 2px; color: var(--kantha);
+  display: flex; align-items: baseline; gap: 4px;
+}
+.bigstat .of { font-size: 22px; color: var(--ink-soft); }
+.rank { margin: 0 0 14px; font-weight: 700; color: var(--indigo); }
+
+.stat-list { margin: 0; display: grid; gap: 8px; }
+.stat-list > div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dotted var(--rule); padding-bottom: 6px; }
+.stat-list dt { color: var(--ink-soft); font-size: 14px; margin: 0; }
+.stat-list dd { margin: 0; font-weight: 700; }
+
+.seals { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.seal {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; text-align: center; line-height: 1.05;
+  border: 1.8px dashed var(--rule); color: var(--ink-soft);
+  background: transparent; padding: 2px;
+}
+.seal.is-done {
+  border-style: solid; border-color: var(--seal);
+  background: var(--seal); color: var(--seal-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--seal) 18%, transparent);
+}
+.seal.is-part { border-color: var(--marigold); color: var(--ink); border-style: solid; }
+
+.div-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.div-list li { display: flex; }
+.div-btn {
+  font: inherit; font-size: 14.5px; cursor: pointer; width: 100%; text-align: left;
+  display: flex; align-items: center; gap: 10px; justify-content: space-between;
+  background: transparent; border: 1.4px solid transparent; border-radius: 8px;
+  padding: 8px 10px; color: var(--ink); min-height: 44px;
+}
+.div-btn:hover { background: var(--paper-3); border-color: var(--rule); }
+.div-btn:focus-visible { outline: 3px solid var(--indigo); outline-offset: 1px; }
+.div-btn .cnt { color: var(--ink-soft); font-weight: 700; font-size: 13.5px; }
+.div-btn .bar { height: 6px; border-radius: 3px; background: var(--rule-soft); flex: 1; max-width: 92px; overflow: hidden; }
+.div-btn .bar > i { display: block; height: 100%; background: var(--kantha); width: 0; transition: width var(--t); }
+
+#search {
+  font: inherit; width: 100%; padding: 11px 13px; min-height: 44px;
+  border: 1.6px solid var(--rule); border-radius: var(--radius-sm);
+  background: var(--paper); color: var(--ink);
+}
+#search:focus-visible { outline: 3px solid var(--indigo); outline-offset: 1px; }
+
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-row + .btn-row { margin-top: 10px; }
+.copied { min-height: 22px; margin: 8px 0 0; font-size: 13.5px; color: var(--leaf); font-weight: 700; }
+
+/* ------------------------------------------------------------------ exports */
+.exports .exp-row { border-top: 1.4px dashed var(--rule); padding: 12px 0; display: grid; gap: 8px; }
+.exports .exp-row:first-of-type { border-top: 0; padding-top: 0; }
+.exp-head { display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 14.5px; }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; }
+.exp-note { font-size: 13px; color: var(--ink-soft); margin: 10px 0 0; }
+
+/* ------------------------------------------------------------------ colophon */
+.colophon {
+  max-width: var(--sheet); margin: 8px auto 40px; padding: 16px var(--gap) 0;
+  border-top: 2px solid var(--rule); color: var(--ink-soft); font-size: 13.5px;
+}
+.colophon p { margin: 4px 0; }
+
+/* ------------------------------------------------------------------ responsive */
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .rail { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); display: grid; }
+}
+@media (max-width: 640px) {
+  :root { --gap: 14px; }
+  .masthead { padding-top: 18px; }
+  .layout { padding: 14px; }
+  .bigstat { font-size: 46px; }
+  .rail { grid-template-columns: minmax(0, 1fr); }
+  .bd-map { min-height: 58vh; }
+  .btn, .chip, .div-btn { min-height: 44px; }
+}
+
+/* ------------------------------------------------------------------ motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* ------------------------------------------------------------------ print */
+@media print {
+  body { background: #fff; color: #000; }
+  .masthead-actions, .rail, .colophon, .map-hint, .legend { display: none !important; }
+  .layout { display: block; padding: 0; }
+  .map-card { border: 0; box-shadow: none; padding: 0; }
+  #districts path.is-visited { fill: #333 !important; }
+}
