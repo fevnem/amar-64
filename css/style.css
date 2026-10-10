@@ -41,7 +41,7 @@
   --map-water:  #e7eef2;
   --map-border: #c9bda3;
   --map-hover:  rgba(29, 78, 115, .16);
-  --kantha-fill: rgba(187, 58, 58, .30);
+  --kantha-fill: rgba(187, 58, 58, .48);
 }
 
 html.night {
@@ -64,7 +64,7 @@ html.night {
   --map-water:  #101820;
   --map-border: #3a4b59;
   --map-hover:  rgba(232, 183, 87, .22);
-  --kantha-fill: rgba(226, 119, 95, .34);
+  --kantha-fill: rgba(226, 119, 95, .46);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -202,7 +202,7 @@ body {
 #districts path.is-visited {
   fill: url(#stitch);
   stroke: var(--kantha-ink);
-  stroke-width: 1.5;
+  stroke-width: 1.8;
 }
 #districts path.is-wish {
   fill: rgba(29, 78, 115, .07);
@@ -228,7 +228,7 @@ body {
 
 /* the red thread: a running stitch over the districts you have been to */
 .stitch-bg { fill: var(--kantha-fill); }
-.stitch-line { stroke: var(--kantha-ink); stroke-width: 1.35; stroke-dasharray: 3 2.6; stroke-linecap: round; opacity: .82; }
+.stitch-line { stroke: var(--kantha-ink); stroke-width: 1.5; stroke-dasharray: 2.8 2.4; stroke-linecap: round; opacity: .9; }
 
 .tip {
   position: absolute; z-index: 8; pointer-events: none;
