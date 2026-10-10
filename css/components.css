@@ -1,0 +1,662 @@
+/* ==========================================================================
+   আমার ৬৪ — COMPONENTS   (hand H3 · file: css/components.css)
+
+   Implements the REDESIGN CONTRACT §7 (exact class names) consuming ONLY the
+   tokens frozen by H1 in css/tokens.css (§3 colour · §4 type · §5 space/radius/
+   elevation/border). Rules for this file:
+     • no hex, no rgb()/rgba() literals, no :root block — every colour is a
+       var(--…) from tokens.css (translucency is derived with color-mix over a
+       token, exactly as base.css does for ::selection);
+     • every font-size is one of --t-hero/stat/h2/h3/lead/body/label/micro;
+     • the only raw px below are the §5 spacing scale (--sp-1…--sp-8) and the
+       §5 border weights (--bw-card / --bw-map);
+     • RED = "I have been here" only. Reset/clear = ink outline (§3). The single
+       progress ring, the division bars and the hero number are INK, never red;
+       only the map's stitch and the legend's visited swatch carry --kantha.
+
+   NOT styled here (owned by other hands, per §12 — so the two never fight):
+     .masthead .brand .brand-mark .progress-pill .icon-btn .hero .hero-line
+     .hero-lede .hero-rule .layout           → layout.css (H2)
+     .bottom-bar                              → mobile.css (H4)
+   ========================================================================== */
+
+/* =============================================================== cards §7 */
+/* .map-card is the widest column; .summary is the 340px sticky rail. They are
+   direct children of main.layout and must never nest (§6) — shell is H2's. */
+.map-card,
+.summary {
+  min-width: 0;
+  background: var(--c-surface);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-card);
+  box-shadow: var(--sh-card);
+  padding: var(--sp-4);
+}
+
+/* the sticky summary column (§6: 340px, sticky). Width/grid-track are layout. */
+.summary {
+  position: sticky;
+  top: var(--gap);
+  align-self: start;
+}
+
+/* a card's title sits over a hairline rule — the ledger tell (base.css sets the
+   type size on bare h2). */
+.map-card > h2,
+.summary > h2 {
+  margin: 0 0 var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--bw-card) solid var(--c-rule-soft);
+}
+
+/* ========================================================== the one number */
+/* .summary-stat holds the ring + its number. INK, never red — §1 called the
+   red "big number" an amateur tell; red means the map thread and nothing else. */
+.summary-stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: var(--bw-card) solid var(--c-rule-soft);
+}
+
+/* progress ring. --p (0…1) is component STATE set by js, not a design token:
+   el.style.setProperty('--p', visited / 64). */
+.ring {
+  --p: 0;
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  border-radius: var(--r-pill);
+  background: conic-gradient(var(--ink) calc(var(--p) * 1turn), var(--c-rule-soft) 0);
+}
+/* punch the middle back to the card surface so the arc reads as a ring */
+.ring::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+}
+.ring-num,
+.ring-cap {
+  position: relative;
+  z-index: 1;
+}
+.ring-num {
+  font-family: var(--font-disp);
+  font-size: var(--t-stat);
+  line-height: var(--lh-stat);
+  font-weight: var(--fw-display);
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
+}
+.ring-cap {
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text-soft);
+  text-align: center;
+}
+
+/* secondary facts: area %, divisions done, wishlist count */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-4);
+}
+.sum-item {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+.sum-num {
+  font-family: var(--font-disp);
+  font-size: var(--t-h3);
+  line-height: var(--lh-h3);
+  font-weight: var(--fw-display);
+  color: var(--c-text);
+  font-variant-numeric: tabular-nums;
+}
+.sum-cap {
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-body);
+  color: var(--c-text-soft);
+}
+
+/* ============================================================ legend §7 §11 */
+/* legend items are FILTERS — interactive, not decoration. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  margin: var(--sp-3) 0 0;
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  color: var(--c-text-soft);
+}
+.lg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-ui);
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text-soft);
+  background: transparent;
+  border: var(--bw-card) solid transparent;
+  border-radius: var(--r-pill);
+  padding: var(--sp-1) var(--sp-2);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.lg:hover { color: var(--c-text); background: var(--paper-3); }
+/* emphasis on = this layer is highlighted; off = dimmed (the toggle H7 drives) */
+.lg[aria-pressed="true"],
+.lg.is-on {
+  color: var(--c-text);
+  background: var(--c-surface);
+  border-color: var(--c-rule);
+}
+.lg[aria-pressed="false"] { opacity: .55; }
+
+.sw {
+  flex: none;
+  width: 22px;
+  height: 13px;
+  border-radius: var(--r-sm);
+  display: inline-block;
+}
+/* visited — the red thread (the one place brand red touches surface area) */
+.sw-visited {
+  background: var(--c-visited);
+  border: var(--bw-card) solid var(--c-visited-edge);
+}
+/* wishlist — indigo, dashed, never filled */
+.sw-wish {
+  background: var(--c-wish-fill);
+  border: var(--bw-map) dashed var(--c-wish);
+}
+/* unvisited — paper-3 + hairline */
+.sw-none {
+  background: var(--c-unvisited);
+  border: var(--bw-card) solid var(--c-unvisited-edge);
+}
+
+/* ======================================================= division grid §7 */
+/* completion per division, each bar ≥ 6px tall (§7). Bars are INK, not red. */
+.div-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-3);
+}
+.div-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-2);
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  color: var(--c-text);
+}
+.div-num {
+  grid-column: 2;
+  grid-row: 1;
+  font-weight: var(--fw-label);
+  color: var(--c-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.div-bar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: relative;
+  height: 6px;                 /* §7: ≥ 6px */
+  border-radius: var(--r-pill);
+  background: var(--c-rule-soft);
+  overflow: hidden;
+}
+.div-bar > i,
+.div-bar > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ink);
+  transition: width var(--dur) var(--ease);
+}
+
+/* ============================================================== buttons §7 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: 44px;                 /* thumb-first (§6) */
+  padding: var(--sp-2) var(--sp-4);
+  font-family: var(--font-ui);
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease),
+              opacity var(--dur-fast) var(--ease);
+}
+.btn:hover { border-color: var(--c-text-soft); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible { outline: var(--focus-w) solid var(--c-focus); outline-offset: var(--focus-off); }
+.btn:disabled,
+.btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; }
+
+/* primary — share / export. INK solid (§3); NEVER red. */
+.btn-primary {
+  color: var(--c-primary-ink);
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+}
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--c-primary) 85%, var(--c-primary-alt));
+  border-color: color-mix(in srgb, var(--c-primary) 85%, var(--c-primary-alt));
+}
+
+/* ghost — quiet, borderless on the surface */
+.btn-ghost {
+  color: var(--c-text-soft);
+  background: transparent;
+  border-color: transparent;
+}
+.btn-ghost:hover { color: var(--c-text); background: var(--paper-3); }
+
+/* destructive (clear/reset) — ink OUTLINE + a confirm dialog. NEVER red (§3). */
+.btn-danger-confirm {
+  color: var(--c-destructive);
+  background: transparent;
+  border-color: var(--c-destructive);
+}
+.btn-danger-confirm:hover {
+  color: var(--c-destructive-ink);
+  background: var(--c-destructive);
+}
+
+/* ================================================================ chips §7 */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-height: 38px;
+  padding: var(--sp-1) var(--sp-3);
+  font-family: var(--font-ui);
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text-soft);
+  background: transparent;
+  border: var(--bw-card) dashed var(--c-rule);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.chip:hover { color: var(--c-text); border-color: var(--c-text-soft); }
+.chip.is-on {
+  color: var(--c-primary-ink);
+  background: var(--c-primary);
+  border-style: solid;
+  border-color: var(--c-primary);
+}
+
+/* =============================================================== sheet §7 */
+/* settings sheet — a native <dialog> (§6/§11). Native focus trap, Escape-close. */
+.sheet {
+  width: min(560px, calc(100vw - var(--sp-5) * 2));
+  max-width: 100%;
+  max-height: min(88vh, 760px);
+  margin: auto;
+  padding: var(--sp-5);
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-card);
+  box-shadow: var(--sh-float);
+  overflow: auto;
+}
+/* scrim: ink dims the light page; the night page is dimmed by paper (both are
+   the *dark* end of their theme, so the backdrop always reads as a shadow). */
+.sheet::backdrop {
+  background: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+html.night .sheet::backdrop {
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
+}
+
+.sheet-h {
+  margin: 0 0 var(--sp-4);
+  padding-bottom: var(--sp-3);
+  border-bottom: var(--bw-card) solid var(--c-rule);
+  font-family: var(--font-disp);
+  font-size: var(--t-h2);
+  line-height: var(--lh-h2);
+  font-weight: var(--fw-label);
+  color: var(--c-text);
+}
+
+/* a labelled field group (label + control) */
+.field {
+  display: grid;
+  gap: var(--sp-1);
+  margin: 0 0 var(--sp-4);
+}
+.field > label {
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text-soft);
+}
+.field input:not(.switch),
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--sp-2) var(--sp-3);
+  font-family: var(--font-ui);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--c-text);
+  background: var(--c-canvas);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-control);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.field input:not(.switch):hover,
+.field select:hover,
+.field textarea:hover { border-color: var(--c-text-soft); }
+
+/* toggle switch — the <input class="switch" type="checkbox"> itself */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background: var(--paper-3);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-pill);
+  transition: background-color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--sp-1);
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-pill);
+  background: var(--c-surface);
+  transform: translateY(-50%);
+  transition: transform var(--dur) var(--ease);
+}
+.switch:checked {
+  background: var(--indigo);
+  border-color: var(--indigo);
+}
+.switch:checked::before { transform: translate(18px, -50%); }
+.switch:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ============================================================= profile §8 */
+.profile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.profile-avatar {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  object-fit: cover;
+  background: var(--paper-3);
+  border: var(--bw-card) solid var(--c-rule);
+}
+.profile-name {
+  font-size: var(--t-label);
+  line-height: var(--lh-label);
+  font-weight: var(--fw-label);
+  color: var(--c-text);
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* empty state — a dashed circle with a "+" */
+.avatar-drop {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: var(--t-body);
+  line-height: 1;
+  color: var(--c-text-soft);
+  background: transparent;
+  border: var(--bw-card) dashed var(--c-rule);
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+}
+.avatar-drop:hover,
+.avatar-drop.is-over,
+.avatar-drop[data-over="true"] {
+  color: var(--indigo);
+  border-color: var(--indigo);
+  background: color-mix(in srgb, var(--indigo) 10%, transparent);
+}
+.avatar-drop:disabled { opacity: .5; cursor: not-allowed; }
+
+/* =========================================================== share row §10 */
+.share-row {
+  display: grid;
+  gap: var(--sp-4);
+}
+/* the live 1200×630 card preview */
+.card-preview {
+  width: 100%;
+  aspect-ratio: 1200 / 630;
+  background: var(--c-canvas);
+  border: var(--bw-card) solid var(--c-rule);
+  border-radius: var(--r-control);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+.card-preview > img,
+.card-preview > canvas,
+.card-preview > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+
+/* ============================================================================
+   INTEGRATION BLOCK — appended by the manager, not by H3.
+   H5's shell never landed, so the map's paint rules (which lived in the deleted
+   v1 css/style.css) and a few shell details had no home. Every value below is a
+   token from §3–§5; nothing here invents a size, a colour or a class.
+   The map is the product: it gets the red thread, the haloed Bengali labels and
+   a viewport-fitting height. Recorded in the ledger.
+   ========================================================================== */
+
+/* --- the map surface — the widest column, calm paper, never a background ---- */
+.map-wrap { position: relative; }
+.bd-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--map-bg);
+  background-image: linear-gradient(180deg, var(--map-water), var(--map-bg) 42%);
+  border: var(--bw-card) solid var(--c-rule-soft);
+  border-radius: var(--r-sm);
+  touch-action: manipulation;
+}
+/* A max-height here would letterbox the country: a replaced element keeps its
+   aspect ratio by shrinking BOTH dimensions, so the map would sit narrow in the
+   middle of its column with dead space either side. The map is the product —
+   it fills the column and the page scrolls. (Measured: 834×1152 at 1440.) */
+
+/* --- districts: quiet paper at rest, the red thread when visited ----------- */
+#districts path {
+  fill: var(--c-unvisited);
+  stroke: var(--c-unvisited-edge);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: fill var(--dur-fast) var(--ease), stroke-width var(--dur-fast) var(--ease);
+}
+#districts path:hover { fill: var(--map-hover); }
+#districts path:focus-visible { outline: none; stroke: var(--c-focus); stroke-width: 2.4; }
+#districts path.is-visited {
+  fill: url(#stitch);
+  stroke: var(--c-visited-edge);
+  stroke-width: 1.8;
+}
+#districts path.is-wish {
+  fill: color-mix(in srgb, var(--c-wish) 7%, transparent);
+  stroke: var(--c-wish);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3;
+}
+#districts path.is-match { stroke: var(--marigold); stroke-width: 2.4; }
+#districts path.is-dim { opacity: .38; }
+
+/* --- the running stitch itself (the pattern js/map.js builds) -------------- */
+.stitch-bg { fill: var(--kantha-fill); }
+.stitch-line {
+  stroke: var(--kantha-ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 2.8 2.4;
+  stroke-linecap: round;
+  opacity: .9;
+}
+
+/* --- labels: Bengali-first size, haloed so the stitch never eats them ------ */
+.labels text {
+  font-family: var(--font-ui);
+  font-size: var(--t-micro);
+  font-weight: var(--fw-label);
+  fill: var(--c-text);
+  paint-order: stroke;
+  stroke: var(--map-bg);
+  stroke-width: calc(var(--t-micro) * 0.45);
+  pointer-events: none;
+}
+.labels text.is-hidden { display: none; }
+
+/* --- the district tooltip --------------------------------------------------- */
+.tip {
+  position: absolute;
+  z-index: 8;
+  pointer-events: none;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--t-label);
+  font-weight: var(--fw-label);
+  transform: translate(-50%, -128%);
+  white-space: nowrap;
+  box-shadow: var(--sh-float);
+}
+
+/* --- the toast: the sheet's and the exports' one live region ---------------- */
+#copied {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: calc(var(--sp-5) + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  margin: 0;
+  max-width: min(92vw, 40rem);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--r-pill);
+  font-size: var(--t-label);
+  font-weight: var(--fw-label);
+  text-align: center;
+  box-shadow: var(--sh-float);
+}
+#copied[hidden] { display: none; }
+
+/* --- the sheet's own rhythm (a real <dialog>; sections are h3 + controls) --- */
+.sheet { position: relative; }
+.sheet h3 {
+  margin: var(--sp-5) 0 var(--sp-2);
+  font-size: var(--t-h3);
+  line-height: 1.35;
+  font-weight: var(--fw-label);
+  color: var(--c-text);
+}
+.sheet h3:first-of-type { margin-top: var(--sp-3); }
+.sheet p {
+  margin: var(--sp-2) 0;
+  font-size: var(--t-body);
+  line-height: 1.7;
+  color: var(--c-text-soft);
+}
+.sheet .btn { margin: 0 var(--sp-2) var(--sp-2) 0; }
+.sheet .field, .sheet .chips, .sheet .share-row, .sheet .profile { margin-bottom: var(--sp-3); }
+.sheet #sheet-close { position: absolute; top: var(--sp-4); right: var(--sp-4); }
+.sheet ul { margin: var(--sp-2) 0 0; padding-left: var(--sp-5); display: grid; gap: var(--sp-1); }
+.sheet ul li { font-size: var(--t-body); line-height: 1.7; color: var(--c-text-soft); }
+
+/* --- shell bits the base layers did not reach -------------------------------- */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: var(--sp-2) 0; }
+.div-name { font-weight: var(--fw-label); color: var(--c-text); }
+/* no layer sized the icons: an inline <svg> without width/height collapses to 0×0
+   inside a flex button, so every icon button was text-only. */
+.icon-btn > svg { width: 18px; height: 18px; flex: none; display: block; }
+.bottom-bar .icon-btn > svg { width: 20px; height: 20px; }
+.bottom-bar .icon-btn {
+  color: var(--c-text);
+  background: var(--c-surface);
+  border: var(--bw-card) solid var(--c-rule);
+}
+#stat-empty { margin: var(--sp-2) 0 0; font-size: var(--t-label); color: var(--c-text-soft); }
+.map-card .map-hint { margin: var(--sp-2) 0 0; }

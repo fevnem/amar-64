@@ -1,0 +1,229 @@
+/* ==========================================================================
+   আমার ৬৪ · css/mobile.css — H4 · the compact phone theme
+   --------------------------------------------------------------------------
+   Scope (redesign contract §6 Mobile, §11 Motion & a11y, §12 file ownership):
+     · everything here is for ≤ 640px (compact theme + bottom action bar)
+       and ≤ 420px (the §4 type ladder steps down one notch).
+     · it is loaded after tokens/base/layout/components and never restyles the
+       desktop shell — with one deliberate exception: `.bottom-bar` is declared
+       `display:none` at the top level because §7 marks it "mobile only".
+     · every var() carries the contract value as a fallback, so this sheet
+       renders correctly even when read on its own (tokens not yet loaded).
+   Tokens: §3 colours · §4 type scale · §5 space/radii/elevation.
+   Classes: only those named in §7 — nothing invented.
+   ========================================================================== */
+
+/* Bottom action bar lives on phones only (§6, §7). */
+.bottom-bar { display: none; }
+
+
+/* ==========================================================================
+   1 · COMPACT THEME — ≤ 640px
+   Order it guarantees: masthead → full-width map → one-line stats strip →
+   share → (fixed) bottom bar. Source order is H5's; this sheet makes it hold.
+   ========================================================================== */
+@media (max-width: 640px) {
+
+  /* 1.0 ── no horizontal scroll at 320 / 360 / 390 / 414 ------------------ */
+  body {
+    overflow-x: hidden;
+    overflow-wrap: anywhere;
+    /* keep the tail of the page clear of the fixed bottom bar + home indicator */
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+  img, svg, canvas, video, iframe, table { max-width: 100%; }
+  .masthead, main, .layout, .colophon, .bottom-bar { max-width: 100%; }
+  .layout > * { min-width: 0; max-width: 100%; }   /* grid/flex children may shrink */
+
+  /* 1.1 ── single column, phone gutters ---------------------------------- */
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+  main, section, aside, .map-card, .summary, .panel { min-width: 0; }
+
+  /* 1.2 ── masthead: mark + progress + ⋯ only ---------------------------- */
+  .masthead {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 12px 8px;
+  }
+  .brand { flex: 1 1 auto; gap: 10px; min-width: 0; }
+  .brand-mark { width: 36px; height: 36px; }
+  .title { font-size: var(--t-h2, 24px); line-height: 1.2; }
+  .tagline { display: none; }        /* masthead is a single line on a phone */
+  .segmented { display: none; }      /* the mode switch belongs in the ⋯ sheet (§2.3) */
+  .masthead-actions { flex: 0 0 auto; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  .progress-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    min-height: 44px; padding: 0 14px;
+    border: 1.5px solid var(--rule, #dbd0b8);
+    border-radius: var(--r-pill, 999px);
+    background: var(--paper-2, #fffbf2);
+    color: var(--ink, #1a2430);
+    font-size: var(--t-label, 13px); font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .icon-btn {
+    display: inline-grid; place-items: center;
+    width: 44px; height: 44px; min-width: 44px; min-height: 44px;
+    padding: 0;
+    border: 1.5px solid var(--rule, #dbd0b8);
+    border-radius: var(--r-pill, 999px);
+    background: var(--paper-2, #fffbf2); color: var(--ink, #1a2430);
+    cursor: pointer;
+  }
+
+  /* 1.3 ── the map is the hero here: the lede collapses ------------------- */
+  .hero { display: none; }           /* §6 mobile order has no hero row */
+
+  /* 1.4 ── the map card: full width, min 52vh, first on the page --------- */
+  .map-card { order: -1; }
+  .map-card, .summary, .panel {
+    padding: 12px;
+    border-radius: var(--r-card, 16px);
+  }
+  .bd-map { display: block; width: 100%; min-height: 52vh; height: auto; }
+  .map-wrap { position: relative; min-height: 52vh; }
+
+  /* §6: only labels that fit are shown (chosen in js/map.js) — they are micro */
+  .labels text { font-size: var(--t-micro, 12px); }
+  .map-hint { margin: 8px 0 0; font-size: var(--t-label, 13px); }
+  .about-box { padding: 8px 10px; }
+
+  /* legend items are filters (§7) — real 44px tap targets, wrap as a row */
+  .legend { gap: 6px; margin-top: 8px; }
+  .lg { min-height: 44px; padding: 6px 8px; cursor: pointer; }
+  .lg:focus-visible { outline: 3px solid var(--indigo, #1d4e73); outline-offset: 2px; border-radius: var(--r-sm, 8px); }
+  .sw { width: 20px; height: 13px; flex: none; }
+
+  /* 1.5 ── stats collapse into one strip: visited · area% · divisions ----- */
+  .summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .summary-stat {
+    display: inline-flex; align-items: baseline; gap: 3px;
+    font-size: var(--t-stat, 44px); line-height: 1; font-weight: 700;
+    color: var(--kantha, #bb3a3a);      /* red means "visited" — the one number */
+  }
+  .summary-stat .of { font-size: var(--t-label, 13px); color: var(--ink-soft, #5b6673); font-weight: 600; }
+  .ring { flex: none; width: 56px; height: 56px; }
+  .ring-num { font-size: var(--t-h2, 24px); font-weight: 700; }
+  .ring-cap { font-size: var(--t-label, 13px); color: var(--ink-soft, #5b6673); }
+  .summary-grid {
+    flex: 1 1 200px; min-width: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
+  }
+  .sum-item { min-height: 44px; display: grid; place-items: center; text-align: center; gap: 2px; padding: 4px; }
+  .sum-num { font-size: var(--t-h3, 19px); font-weight: 700; line-height: 1.1; }
+  .sum-cap { font-size: var(--t-micro, 12px); line-height: 1.25; color: var(--ink-soft, #5b6673); }
+
+  /* 1.6 ── the primary share button ends the flow, full width ------------ */
+  .summary .btn, .summary .btn-primary { flex: 1 1 100%; width: 100%; min-height: 48px; }
+
+  /* 1.7 ── division grid: one column, 44px rows, bars ≥ 6px (§7) --------- */
+  .div-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .div-item, .div-btn { min-height: 44px; }
+  .div-bar { height: 6px; border-radius: 3px; }
+  .div-num { font-variant-numeric: tabular-nums; }
+
+  /* 1.8 ── every control is a ≥ 44×44 tap target (§6) ------------------- */
+  .btn, .chip, .lg, .icon-btn, .div-item, .div-btn, .sum-item,
+  .field, .switch, .profile, .avatar-drop { min-height: 44px; }
+  .btn { padding: 10px 18px; }
+  .chip { min-height: 44px; padding: 8px 16px; }
+  .btn-row { gap: 8px; }
+  .btn-row .btn { flex: 1 1 auto; }
+
+  /* progressive disclosure (§2.3): search / clear / JSON / exports are not
+     part of the phone surface — they live in the ⋯ sheet. */
+  .panel.find, .panel.actions, .panel.exports { display: none; }
+
+  /* 1.9 ── the bottom action bar: two controls, nothing else (§6) -------- */
+  .bottom-bar {
+    display: flex; align-items: center; gap: 8px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: var(--paper-2, #fffbf2);
+    border-top: 1px solid var(--rule, #dbd0b8);
+    box-shadow: var(--sh-float, 0 -10px 24px -18px rgba(0, 0, 0, .4));
+  }
+  .bottom-bar .btn { flex: 1 1 auto; min-height: 48px; font-size: var(--t-body, 15px); }
+  .bottom-bar .icon-btn { flex: 0 0 auto; width: 48px; height: 48px; min-width: 48px; }
+
+  /* 1.10 ── the sheet is a bottom sheet on a phone ----------------------- */
+  .sheet {
+    position: fixed; inset: auto 0 0 0; margin: 0;
+    width: 100%; max-width: 100%; max-height: 88vh;
+    overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+    border: 1px solid var(--rule, #dbd0b8); border-bottom: 0;
+    border-radius: var(--r-card, 16px) var(--r-card, 16px) 0 0;
+  }
+  .sheet::backdrop { background: rgba(12, 16, 20, .44); }
+  .sheet-h { font-size: var(--t-h2, 24px); line-height: 1.25; }
+  .field { display: block; width: 100%; min-height: 44px; }
+  .switch { display: inline-flex; align-items: center; gap: 8px; }
+
+  /* 1.11 ── share row + card preview stack vertically -------------------- */
+  .share-row { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .card-preview { display: block; width: 100%; height: auto; border-radius: var(--r-control, 12px); }
+  .card-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+
+  /* 1.12 ── traveller profile (§8) --------------------------------------- */
+  .profile { display: inline-flex; align-items: center; gap: 8px; }
+  .profile-avatar { width: 40px; height: 40px; border-radius: var(--r-pill, 999px); object-fit: cover; }
+  .profile-name { font-size: var(--t-label, 13px); font-weight: 600; }
+  .avatar-drop { display: inline-grid; place-items: center; width: 44px; }
+
+  /* 1.13 ── quiet colophon ----------------------------------------------- */
+  .colophon {
+    margin: 8px auto 24px; padding: 12px 12px 0;
+    font-size: var(--t-micro, 12px);
+  }
+}
+
+
+/* ==========================================================================
+   2 · TYPE STEPS DOWN ONE NOTCH — ≤ 420px
+   §4 is the only scale allowed, so "one notch" = each token moves to the rung
+   below it. The small end floors out (13px labels / 12px micro / 15px body are
+   the Bengali-readable minimum) rather than dropping below it.
+   ========================================================================== */
+@media (max-width: 420px) {
+  :root {
+    --t-hero: 44px;   /* was 64 */
+    --t-stat: 24px;   /* was 44 */
+    --t-h2: 19px;     /* was 24 */
+    --t-h3: 17px;     /* was 19 */
+    --t-lead: 15px;   /* was 17 */
+    /* --t-body 15 · --t-label 13 · --t-micro 12 stay put (floor) */
+  }
+
+  .layout { padding: 8px; gap: 8px; }
+  .map-card, .summary, .panel { padding: 10px; }
+  .bd-map, .map-wrap { min-height: 48vh; }
+  .ring { width: 48px; height: 48px; }
+  .bottom-bar { padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); }
+}
+
+
+/* ==========================================================================
+   3 · MOTION (§11) — opacity/transform only, 160ms ease-out; all of it is off
+   under prefers-reduced-motion (this sheet stands on its own, so the guard is
+   here too, not only in base.css).
+   ========================================================================== */
+.bottom-bar, .bottom-bar .btn, .icon-btn, .lg, .summary-stat, .card-preview {
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+.bottom-bar .btn:active, .icon-btn:active { transform: translateY(1px); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

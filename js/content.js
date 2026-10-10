@@ -1,6 +1,6 @@
 /* আমার ৬৪ — the Bengali words of the app, kept as plain data.
-   Global: window.A64C (read by js/app.js and js/export.js).
-   Script order: bn.js -> content.js -> app.js -> export.js, so nothing here
+   Global: window.A64C (read by js/app.js, its map and its exporters).
+   Script order: bn.js -> content.js -> ... -> app.js, so nothing here
    may touch A64 — this file only ships copy. */
 (function (w) {
   "use strict";

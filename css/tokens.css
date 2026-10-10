@@ -1,0 +1,157 @@
+/* ==========================================================================
+   আমার ৬৪ — TOKENS   (hand H1 · design-system core, file 1 of 2)
+   Implements the frozen REDESIGN CONTRACT:
+     §3  colour semantics  — red means ONE thing: "I have been here"
+     §4  type scale (Bengali-first) — the ONLY sizes allowed
+     §5  spacing · radii · elevation · borders
+   Frozen: every hand consumes these names, nobody forks or re-tunes them.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------- §3 palette
+     khata (ledger) paper + ink. Raw values — prefer the SEMANTIC tokens below. */
+  --paper:      #f6efe1;
+  --paper-2:    #fffbf2;
+  --paper-3:    #efe6d3;
+  --ink:        #1a2430;
+  --ink-soft:   #5b6673;
+  --rule:       #dbd0b8;
+  --rule-soft:  #e9e0cc;
+
+  /* the mark itself: kantha = the red thread of the khata */
+  --kantha:      #bb3a3a;
+  --kantha-ink:  #8d2626;
+  --kantha-tint: rgba(187, 58, 58, .10);   /* faint wash */
+  --kantha-fill: rgba(187, 58, 58, .48);   /* the stitch bed on the map */
+  --indigo:      #1d4e73;
+  --indigo-soft: #5b86a8;
+  --marigold:    #dfa032;
+  --leaf:        #1f6f5c;
+  --seal:        #a93a24;
+  --seal-ink:    #fdf6e6;
+
+  /* the map surface */
+  --map-bg:     #f9f4e8;
+  --map-water:  #e7eef2;
+  --map-border: #c9bda3;
+  --map-hover:  rgba(29, 78, 115, .16);
+
+  /* ================================================================== §3 SEMANTICS
+     Red (--kantha) is spent on ONE thing and nothing else: a district you have
+     BEEN to. Destructive and primary actions are ink/indigo — never red. */
+  /*   visited  — the red thread, the only place brand red touches surface area. */
+  --c-visited:        var(--kantha);
+  --c-visited-edge:   var(--kantha-ink);
+  --c-visited-wash:   var(--kantha-tint);
+  /*   wishlist — indigo, dashed stroke, NEVER filled */
+  --c-wish:           var(--indigo);
+  --c-wish-fill:      transparent;
+  /*   unvisited — paper-3 + a hairline rule */
+  --c-unvisited:      var(--paper-3);
+  --c-unvisited-edge: var(--map-border);
+  /*   destructive (clear / reset) — ink outline + confirm dialog. NEVER red. */
+  --c-destructive:    var(--ink);
+  --c-destructive-ink: var(--paper-2);
+  /*   primary action (share / export) — ink solid; indigo solid is the alt. NEVER red. */
+  --c-primary:        var(--ink);
+  --c-primary-ink:    var(--paper-2);
+  --c-primary-alt:    var(--indigo);
+  /*   focus ring — indigo, always visible, on every interactive element */
+  --c-focus:          var(--indigo);
+  /*   text + surfaces (text tokens are ≥ 4.5:1 on their background) */
+  --c-text:      var(--ink);
+  --c-text-soft: var(--ink-soft);
+  --c-surface:   var(--paper-2);
+  --c-canvas:    var(--paper);
+  --c-rule:      var(--rule);
+  --c-rule-soft: var(--rule-soft);
+
+  /* ---------------------------------------------------------------- §4 type scale
+     Bengali-first: these px sizes are chosen for Bengali glyph height (taller
+     than Latin), then Latin is set to them too — never the other way round.
+     The ONLY sizes allowed anywhere in the app. */
+  --t-hero:  64px;   --lh-hero:  1.05;   /* hero display line — one per page */
+  --t-stat:  44px;   --lh-stat:  1.0;    /* THE single progress number */
+  --t-h2:    24px;   --lh-h2:    1.25;   /* card / section titles */
+  --t-h3:    19px;   --lh-h3:    1.35;   /* sub-headings inside cards */
+  --t-lead:  17px;   --lh-lead:  1.65;   /* lede paragraph */
+  --t-body:  15px;   --lh-body:  1.7;    /* body text in cards */
+  --t-label: 13px;   --lh-label: 1.4;    /* labels, chips, buttons, meta */
+  --t-micro: 12px;   --lh-micro: 1.4;    /* map labels, footnotes */
+
+  /* weights: 400 body · 600 labels/buttons/titles · 700 display/stat */
+  --fw-body:    400;
+  --fw-label:   600;
+  --fw-display: 700;
+
+  /* families — fonts.css declares the faces (Bengali + Latin subsets) */
+  --font-ui:   "Noto Sans Bengali", "Noto Sans", system-ui, sans-serif;
+  --font-disp: "Noto Serif Bengali", "Noto Sans Bengali", serif;
+
+  /* ---------------------------------------------------------------- §5 spacing
+     The scale is 4 8 12 16 24 32 48 64 — nothing off-scale. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* §5 radii */
+  --r-card:    16px;
+  --r-control: 12px;
+  --r-pill:    999px;
+  --r-sm:      8px;
+
+  /* §5 elevation — at most TWO shadows in the whole app */
+  --sh-card:  0 1px 0 var(--rule-soft), 0 10px 30px -24px rgba(0, 0, 0, .35);
+  --sh-float: 0 18px 48px -30px rgba(0, 0, 0, .45);
+
+  /* §5 borders — 1px on cards, 1.5px on the map's district strokes */
+  --bw-card: 1px;
+  --bw-map:  1.5px;
+
+  /* focus ring geometry (colour = --c-focus) */
+  --focus-w:   3px;
+  --focus-off: 2px;
+
+  /* ---------------------------------------------------------------- motion (§11)
+     opacity / transform only, 120–200ms, ease-out */
+  --dur-fast: 120ms;
+  --dur:      180ms;
+  --ease:     ease-out;
+
+  /* ---------------------------------------------------------------- layout (§6) */
+  --sheet:    1280px;      /* the page column */
+  --col-side: 340px;       /* the sticky summary column */
+  --gap:      var(--sp-5); /* 24px — on the spacing scale */
+}
+
+/* night = a night map. Same semantic tokens; only the raw values flip. */
+html.night {
+  --paper:      #131a21;
+  --paper-2:    #18222b;
+  --paper-3:    #1e2a34;
+  --ink:        #ece3d2;
+  --ink-soft:   #a3b0bc;
+  --rule:       #2b3945;
+  --rule-soft:  #222e38;
+
+  --kantha:      #e2775f;
+  --kantha-ink:  #f0a48f;
+  --kantha-tint: rgba(226, 119, 95, .14);
+  --kantha-fill: rgba(226, 119, 95, .46);
+  --indigo:      #7fb2d6;
+  --indigo-soft: #4d7c9c;
+  --marigold:    #e8b757;
+  --leaf:        #57a98f;
+  --seal:        #c9502f;
+  --seal-ink:    #18222b;
+
+  --map-bg:     #16202a;
+  --map-water:  #101820;
+  --map-border: #3a4b59;
+  --map-hover:  rgba(232, 183, 87, .22);
+}

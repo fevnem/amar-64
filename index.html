@@ -2,12 +2,12 @@
 <html lang="bn">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>আমার ৬৪ — ৬৪ জেলার ভ্রমণ খাতা</title>
-  <meta name="description" content="বাংলাদেশের ৬৪ জেলার ম্যাপে আপনার যাওয়া জেলাগুলো দাগিয়ে রাখুন, আর সেটি ছবি, SVG বা পোস্টার হিসেবে ডাউনলোড করুন।">
+  <meta name="description" content="বাংলাদেশের ৬৪ জেলার ম্যাপে যাওয়া জেলাগুলো দাগিয়ে রাখুন, হিসাব দেখুন, আর নাম-ছবি দিয়ে নিজের কার্ড বানিয়ে শেয়ার করুন।">
   <meta name="theme-color" content="#f6efe1">
   <meta property="og:title" content="আমার ৬৪">
-  <meta property="og:description" content="৬৪ জেলার ভ্রমণ খাতা — দাগ দিন, হিসাব দেখুন, পোস্টার নামান।">
+  <meta property="og:description" content="৬৪ জেলার ভ্রমণ খাতা — দাগ দিন, হিসাব দেখুন, নিজের কার্ড শেয়ার করুন।">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="bn_BD">
   <meta property="og:site_name" content="আমার ৬৪">
@@ -15,169 +15,209 @@
   <meta property="og:image" content="https://fevnem.github.io/amar-64/assets/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="৬৪ জেলার ভ্রমণ খাতার ম্যাপ, যাওয়া জেলায় লাল কাঁথার সুতা">
+  <meta property="og:image:alt" content="৬৪ জেলার ভ্রমণ খাতার ম্যাপ — যাওয়া জেলায় লাল কাঁথার সুতা">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
-  <a class="skip" href="#map">ম্যাপে যান</a>
+  <a class="skip" href="#map">সোজা ম্যাপে যান</a>
 
   <header class="masthead">
     <div class="brand">
-      <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
-        <path d="M6 10h36v28H6z" fill="none" stroke="currentColor" stroke-width="2.2"/>
-        <path d="M6 18h36M6 26h36" stroke="currentColor" stroke-width="1.4" opacity=".45"/>
-        <path d="M20 4v40" stroke="currentColor" stroke-width="2.4" opacity=".75"/>
+      <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <path d="M5 9h38v30H5z" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        <path d="M5 19h38M5 29h38" stroke="currentColor" stroke-width="1.6" opacity=".4"/>
+        <path d="M24 3v42" stroke="currentColor" stroke-width="2.6" opacity=".8"/>
       </svg>
-      <div>
-        <h1 class="title">আমার ৬৪</h1>
-        <p class="tagline">৬৪ জেলার ভ্রমণ খাতা — যেখানে গেছেন, সেখানে দাগ</p>
-      </div>
+      <p class="title">আমার ৬৪</p>
+      <p class="tagline">ভ্রমণ খাতা</p>
     </div>
 
     <div class="masthead-actions">
-      <div class="segmented" role="group" aria-label="নিশানা">
-        <input type="radio" name="mode" id="mode-visited" value="visited" checked>
-        <label for="mode-visited"><span class="dot dot-visited" aria-hidden="true"></span>গেছি</label>
-        <input type="radio" name="mode" id="mode-wish" value="wish">
-        <label for="mode-wish"><span class="dot dot-wish" aria-hidden="true"></span>যেতে চাই</label>
-      </div>
-      <button class="btn btn-quiet" id="theme-toggle" type="button" aria-live="polite">রাতের ম্যাপ</button>
+      <p class="progress-pill" title="দাগ পড়া জেলা">
+        <span id="progress-num">০</span><span class="of">/৬৪</span>
+      </p>
+      <button class="profile-avatar" id="avatar-masthead" type="button"
+              aria-label="নিজের নাম ও ছবি দিন" data-empty="true"></button>
+      <button class="icon-btn" id="btn-share" type="button" aria-label="শেয়ার করুন">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.5V4m0 0L7.6 8.4M12 4l4.4 4.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 13.5v5A1.5 1.5 0 0 0 7 20h10a1.5 1.5 0 0 0 1.5-1.5v-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+        <span>শেয়ার</span>
+      </button>
+      <button class="icon-btn" id="btn-sheet" type="button" aria-label="খাতার সব কাজ" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>
+        <span>আরও</span>
+      </button>
     </div>
   </header>
 
-  <main class="layout">
-    <section class="map-card" aria-labelledby="map-h">
-      <h2 class="section-h" id="map-h">ম্যাপ</h2>
+  <section class="hero" aria-labelledby="hero-h">
+    <h1 class="hero-line" id="hero-h">আপনার বাংলাদেশ কতটা?</h1>
+    <p class="hero-lede">গিয়েছেন যে জেলায়, তাতে দাগ দিন — খাতা নিজেই হিসাব রাখবে কত আয়তন, কত বিভাগ। তারপর নাম আর ছবি দিয়ে নিজের কার্ড বানিয়ে শেয়ার করুন।</p>
+    <span class="hero-rule" aria-hidden="true"></span>
+  </section>
 
-      <div class="legend" aria-label="নিশানার ব্যাখ্যা">
-        <span class="lg"><i class="sw sw-visited"></i>গেছি — লাল সুতো</span>
-        <span class="lg"><i class="sw sw-wish"></i>যেতে চাই</span>
-        <span class="lg"><i class="sw sw-none"></i>দাগ নেই</span>
+  <main class="layout">
+    <section class="map-card" id="map" aria-labelledby="map-h">
+      <h2 id="map-h">ম্যাপ</h2>
+      <div class="legend" aria-label="নিশানা — চাপ দিয়ে স্তর দেখা যায়">
+        <button class="lg" type="button" data-layer="visited" aria-pressed="false">
+          <i class="sw sw-visited" aria-hidden="true"></i>গেছি — লাল সুতো
+        </button>
+        <button class="lg" type="button" data-layer="wish" aria-pressed="false">
+          <i class="sw sw-wish" aria-hidden="true"></i>যেতে চাই
+        </button>
+        <button class="lg" type="button" data-layer="none" aria-pressed="false">
+          <i class="sw sw-none" aria-hidden="true"></i>দাগ নেই
+        </button>
+        <div class="chips" role="group" aria-label="জেলায় চাপ দিলে কী হবে">
+          <button class="chip is-on" type="button" data-mode="visited" aria-pressed="true">চাপলে: গেছি</button>
+          <button class="chip" type="button" data-mode="wish" aria-pressed="false">চাপলে: যেতে চাই</button>
+        </div>
       </div>
 
-      <div class="map-wrap" id="map">
+      <div class="map-wrap">
         <svg id="bd-map" class="bd-map" viewBox="0 0 1000 1381" role="img"
-             aria-label="বাংলাদেশের ৬৪ জেলার ম্যাপ">
+             aria-label="বাংলাদেশের ৬৪ জেলার ম্যাপ — যাওয়া জেলায় লাল কাঁথার সুতা">
           <g id="districts"></g>
           <g id="labels" class="labels" aria-hidden="true"></g>
         </svg>
         <div class="tip" id="tip" role="status" aria-live="polite" hidden></div>
-        <p class="map-hint">জেলায় ক্লিক করুন — আবার ক্লিক করলে দাগ মুছে যাবে। কীবোর্ডে তীর চিহ্ন দিয়ে ঘোরা যায়, এন্টার দিয়ে দাগ দেওয়া যায়।</p>
       </div>
-
-      <details class="about-box">
-        <summary>এই খাতা কী?</summary>
-        <p id="about-text"></p>
-        <ul class="tips" id="tips"></ul>
-      </details>
+      <p class="map-hint">চাপলে দাগ পড়ে, আবার চাপলে মুছে যায় — Tab/Enter দিয়েও চলে।</p>
     </section>
 
-    <aside class="rail">
-      <section class="panel stats" aria-labelledby="stats-h">
-        <h2 class="section-h" id="stats-h">হিসাব</h2>
-        <p class="bigstat"><span id="stat-count">০</span><span class="of">/৬৪</span></p>
-        <p class="rank" id="stat-rank">—</p>
-        <p class="empty" id="stat-empty" hidden></p>
-        <dl class="stat-list">
-          <div><dt>দেশের আয়তন</dt><dd><span id="stat-area">০</span>%</dd></div>
-          <div><dt>বিভাগ শেষ</dt><dd><span id="stat-div">০</span>/৮</dd></div>
-          <div><dt>যেতে চাই</dt><dd><span id="stat-wish">০</span> জেলা</dd></div>
-        </dl>
-        <div class="seals" id="seals" aria-label="বিভাগের সিল"></div>
-      </section>
+    <aside class="summary" aria-labelledby="sum-h">
+      <h2 class="sr-only" id="sum-h">হিসাব</h2>
 
-      <section class="panel divisions" aria-labelledby="div-h">
-        <h2 class="section-h" id="div-h">বিভাগ</h2>
-        <ul class="div-list" id="div-list"></ul>
-      </section>
-
-      <section class="panel find" aria-labelledby="find-h">
-        <h2 class="section-h" id="find-h">খুঁজুন</h2>
-        <label class="sr-only" for="search">জেলা খুঁজুন</label>
-        <input id="search" type="search" list="district-names" placeholder="জেলার নাম লিখুন…" autocomplete="off">
-        <datalist id="district-names"></datalist>
-      </section>
-
-      <section class="panel actions" aria-labelledby="act-h">
-        <h2 class="section-h" id="act-h">দাগের কাজ</h2>
-        <div class="btn-row">
-          <button class="btn" id="btn-share" type="button">লিংক কপি</button>
-          <button class="btn" id="btn-undo" type="button">শেষ কাজ ফেরান</button>
-          <button class="btn" id="btn-clear" type="button">সব মুছুন</button>
+      <div class="summary-stat">
+        <div class="ring" id="ring">
+          <p class="ring-num"><span id="stat-count">০</span><span class="of">/৬৪</span></p>
+          <p class="ring-cap">জেলা দাগ পড়েছে</p>
         </div>
-        <div class="btn-row">
-          <button class="btn btn-quiet" id="btn-json" type="button">JSON নামান</button>
-          <label class="btn btn-quiet" for="file-json">JSON আপলোড</label>
-          <input id="file-json" type="file" accept="application/json" hidden>
-        </div>
-        <p class="copied" id="copied" role="status" aria-live="polite"></p>
-      </section>
+      </div>
+      <p id="stat-empty" hidden></p>
 
-      <section class="panel exports" aria-labelledby="exp-h">
-        <h2 class="section-h" id="exp-h">নামিয়ে নিন</h2>
+      <dl class="summary-grid">
+        <div class="sum-item"><dt class="sum-cap">দেশের আয়তন</dt><dd class="sum-num"><span id="stat-area">০</span>%</dd></div>
+        <div class="sum-item"><dt class="sum-cap">বিভাগ শেষ</dt><dd class="sum-num"><span id="stat-div">০</span>/৮</dd></div>
+        <div class="sum-item"><dt class="sum-cap">যেতে চাই</dt><dd class="sum-num"><span id="stat-wish">০</span></dd></div>
+      </dl>
 
-        <div class="exp-row">
-          <div class="exp-head"><span>ছবি (PNG)</span></div>
-          <div class="chips" id="png-size">
-            <button class="chip" data-png="1" type="button">১×</button>
-            <button class="chip is-on" data-png="2" type="button">২×</button>
-            <button class="chip" data-png="3" type="button">৩×</button>
-          </div>
-          <div class="chips" id="png-theme">
-            <button class="chip is-on" data-pngbg="paper" type="button">কাগজ</button>
-            <button class="chip" data-pngbg="night" type="button">রাত</button>
-            <button class="chip" data-pngbg="clear" type="button">স্বচ্ছ</button>
-          </div>
-          <div class="chips" id="png-extra">
-            <button class="chip is-on" data-pngopt="labels" type="button">নাম</button>
-            <button class="chip is-on" data-pngopt="stats" type="button">হিসাব</button>
-          </div>
-          <button class="btn btn-go" id="btn-png" type="button">PNG নামান</button>
-        </div>
+      <ul class="div-grid" id="div-grid"></ul>
 
-        <div class="exp-row">
-          <div class="exp-head"><span>ভেক্টর (SVG)</span></div>
-          <button class="btn btn-quiet" id="btn-svg" type="button">SVG নামান</button>
-        </div>
-
-        <div class="exp-row">
-          <div class="exp-head"><span>পোস্টার (PDF)</span></div>
-          <div class="chips" id="pdf-size">
-            <button class="chip is-on" data-pdf="a4" type="button">A4</button>
-            <button class="chip" data-pdf="a3" type="button">A3</button>
-          </div>
-          <div class="chips" id="pdf-orient">
-            <button class="chip is-on" data-pdfor="portrait" type="button">খাড়া</button>
-            <button class="chip" data-pdfor="landscape" type="button">আড়াআড়ি</button>
-          </div>
-          <button class="btn btn-go" id="btn-pdf" type="button">PDF নামান</button>
-        </div>
-
-        <div class="exp-row">
-          <div class="exp-head"><span>স্টোরি ও শেয়ার কার্ড</span></div>
-          <div class="btn-row">
-            <button class="btn" id="btn-story" type="button">স্টোরি (৯:১৬)</button>
-            <button class="btn" id="btn-card" type="button">শেয়ার কার্ড</button>
-          </div>
-        </div>
-        <p class="exp-note">সব কিছু আপনার ব্রাউজারেই তৈরি হয় — কোনো সার্ভারে যায় না।</p>
-      </section>
+      <button class="btn btn-primary" id="btn-share-primary" type="button">শেয়ার করুন</button>
     </aside>
   </main>
 
   <footer class="colophon">
     <p>ম্যাপ: geoBoundaries (BGD ADM2, CC BY 3.0 IGO) · জেলার নাম ও বিভাগ: bangladesh-geojson (MIT) · ফন্ট: Noto (OFL)</p>
-    <p>আপনার দাগ শুধু আপনার ব্রাউজারে জমা থাকে — লিংক শেয়ার করলে দাগও যায়।</p>
   </footer>
 
-  <canvas id="work-canvas" hidden></canvas>
+  <nav class="bottom-bar" aria-label="দ্রুত কাজ">
+    <button class="btn btn-primary" id="btn-share-bar" type="button">শেয়ার করুন</button>
+    <button class="icon-btn" id="btn-sheet-bar" type="button" aria-haspopup="dialog" aria-label="খাতার সব কাজ">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="19" cy="12" r="2" fill="currentColor"/></svg>
+    </button>
+  </nav>
+
+  <dialog class="sheet" id="sheet" aria-labelledby="sheet-h">
+    <h2 class="sheet-h" id="sheet-h">খাতার সব কাজ</h2>
+    <button class="icon-btn" id="sheet-close" type="button" aria-label="বন্ধ করুন">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+
+    <h3>নিজের কার্ড</h3>
+    <div class="profile" id="profile">
+      <button class="avatar-drop" id="avatar-drop" type="button" aria-label="নিজের ছবি দিন">+</button>
+      <label class="field">
+        <span>আপনার নাম</span>
+        <input class="profile-name" id="profile-name" type="text" maxlength="24" placeholder="নাম লিখুন…" autocomplete="nickname">
+      </label>
+    </div>
+    <div class="share-row" id="share-row"></div>
+
+    <h3>জেলা খুঁজুন</h3>
+    <label class="field">
+      <span class="sr-only">জেলার নাম</span>
+      <input id="search" type="search" list="district-names" placeholder="জেলার নাম লিখুন…" autocomplete="off">
+    </label>
+    <datalist id="district-names"></datalist>
+
+    <h3>নামিয়ে নিন</h3>
+
+    <p>ছবি (PNG)</p>
+    <div class="chips" id="png-size">
+      <button class="chip" type="button" data-png="1">১×</button>
+      <button class="chip is-on" type="button" data-png="2">২×</button>
+      <button class="chip" type="button" data-png="3">৩×</button>
+    </div>
+    <div class="chips" id="png-theme">
+      <button class="chip is-on" type="button" data-pngbg="paper">কাগজ</button>
+      <button class="chip" type="button" data-pngbg="night">রাত</button>
+      <button class="chip" type="button" data-pngbg="clear">স্বচ্ছ</button>
+    </div>
+    <div class="chips" id="png-extra">
+      <button class="chip is-on" type="button" data-pngopt="labels">নাম দিয়ে</button>
+      <button class="chip is-on" type="button" data-pngopt="stats">হিসাব দিয়ে</button>
+    </div>
+    <button class="btn btn-primary" id="btn-png" type="button">PNG নামান</button>
+
+    <p>ভেক্টর (SVG)</p>
+    <button class="btn btn-ghost" id="btn-svg" type="button">SVG নামান</button>
+
+    <p>পোস্টার (PDF)</p>
+    <div class="chips" id="pdf-size">
+      <button class="chip is-on" type="button" data-pdf="a4">A4</button>
+      <button class="chip" type="button" data-pdf="a3">A3</button>
+    </div>
+    <div class="chips" id="pdf-orient">
+      <button class="chip is-on" type="button" data-pdfor="portrait">খাড়া</button>
+      <button class="chip" type="button" data-pdfor="landscape">আড়াআড়ি</button>
+    </div>
+    <button class="btn btn-primary" id="btn-pdf" type="button">PDF নামান</button>
+
+    <p>স্টোরি ও কার্ড</p>
+    <button class="btn btn-ghost" id="btn-story" type="button">স্টোরি কার্ড (৯:১৬)</button>
+    <button class="btn btn-ghost" id="btn-card" type="button">শেয়ার কার্ড</button>
+
+    <h3>দাগের কাজ</h3>
+    <button class="btn btn-ghost" id="btn-undo" type="button">শেষ কাজ ফেরান</button>
+    <label class="switch">
+      <input id="theme-switch" type="checkbox">
+      <span>রাতের ম্যাপ</span>
+    </label>
+    <button class="btn btn-ghost" id="btn-json" type="button">খাতা নামান (JSON)</button>
+    <label class="btn btn-ghost" for="file-json">খাতা খুলুন</label>
+    <input id="file-json" type="file" accept="application/json,.json" hidden>
+    <button class="btn btn-danger-confirm" id="btn-clear" type="button">সব দাগ মুছুন</button>
+
+    <h3>এই খাতা কী?</h3>
+    <p id="about-text"></p>
+    <ul id="tips"></ul>
+  </dialog>
+
+  <dialog class="sheet" id="confirm" aria-labelledby="confirm-h">
+    <h2 class="sheet-h" id="confirm-h">সব দাগ মুছে ফেলবেন?</h2>
+    <p>৬৪ জেলার সব দাগ মুছে যাবে। এটা ফেরানো যাবে না।</p>
+    <button class="btn btn-ghost" id="confirm-no" type="button">থাক</button>
+    <button class="btn btn-danger-confirm" id="confirm-yes" type="button">হ্যাঁ, মুছে ফেলুন</button>
+  </dialog>
+
+  <p id="copied" role="status" aria-live="polite" data-a64-live hidden></p>
 
   <script src="js/bn.js"></script>
   <script src="js/content.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/app.js"></script>
-  <script src="js/export.js"></script>
+  <script src="js/export-posters.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/share.js"></script>
 </body>
 </html>

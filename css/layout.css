@@ -1,0 +1,167 @@
+/* ==========================================================================
+   আমার ৬৪ — css/layout.css
+   Owner: HAND H2 (this file only — see the contract §12).
+   Scope: the DESKTOP SHELL — masthead, the compact hero, the two-column grid,
+   the colophon, and the 1081px breakpoint that collapses the columns.
+   Card/button/chip/legend/sheet skins live in css/components.css (H3); the
+   compact phone theme lives in css/mobile.css (H4).
+
+   Built to ~/.hermes/plans/amar-64-redesign.md:
+     §6 layout anatomy (two columns minmax(0,1fr) 340px, .map-card + .summary as
+        direct children of main.layout, summary sticky, rules above/below)
+     §7 the only class names used here
+     §4 type tokens · §5 spacing/radii · §3 colour meaning · §11 motion
+
+   Every colour/size/radius below is a token (tokens.css, H1) with a value from
+   §3/§4/§5 as the fallback, so this shell still renders if a token is missing.
+   The fallbacks are inert the moment tokens.css defines the token — they are
+   NOT a second design system. Nothing here spends red except nothing at all:
+   the masthead mark is ink (§3 — red means only "I have been here").
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ masthead */
+/* mark + আমার ৬৪                                  [progress pill] [share] [⋯] */
+.masthead {
+  max-width: var(--sheet, 1280px);
+  margin-inline: auto;
+  padding: 16px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--rule, #dbd0b8);
+}
+
+.brand {
+  /* works whether .brand is the container (mark + wordmark) or the wordmark */
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-inline-end: auto;      /* everything after the brand clusters right */
+  min-width: 0;
+  font-size: var(--t-h2, 24px);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink, #1a2430);
+}
+.brand-mark {
+  inline-size: 36px;
+  block-size: 36px;
+  flex: none;
+  color: var(--ink, #1a2430);   /* §3: red is only ever the visited thread */
+}
+
+.progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--rule, #dbd0b8);
+  border-radius: var(--r-pill, 999px);
+  background: var(--paper-2, #fffbf2);
+  color: var(--ink, #1a2430);
+  font-size: var(--t-label, 13px);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  flex: none;
+  padding: 0;
+  font: inherit;
+  color: var(--ink, #1a2430);
+  background: var(--paper-2, #fffbf2);
+  border: 1px solid var(--rule, #dbd0b8);
+  border-radius: var(--r-control, 12px);
+  cursor: pointer;
+  transition: transform 140ms ease-out, opacity 140ms ease-out;   /* §11 */
+}
+.icon-btn:hover { border-color: var(--ink-soft, #5b6673); transform: translateY(-1px); }
+.icon-btn:active { transform: translateY(1px); }
+.icon-btn:focus-visible { outline: 3px solid var(--indigo, #1d4e73); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------------- hero */
+/* compact: one --t-hero line, one --t-lead sentence, one hairline rule. */
+.hero {
+  max-width: var(--sheet, 1280px);
+  margin-inline: auto;
+  padding: 24px 24px 0;
+}
+.hero-line {
+  margin: 0;
+  font-family: var(--font-disp, "Noto Serif Bengali", "Noto Sans Bengali", serif);
+  font-size: var(--t-hero, 64px);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--ink, #1a2430);
+}
+.hero-lede {
+  margin: 12px 0 0;
+  font-size: var(--t-lead, 17px);
+  line-height: 1.65;
+  color: var(--ink-soft, #5b6673);
+  max-width: 62ch;
+}
+.hero-rule {
+  margin: 24px 0 0;
+  border: 0;
+  border-top: 1px solid var(--rule, #dbd0b8);
+}
+/* §6: on desktop the hero line is exactly ONE line (measured: 700px wide at 64px,
+   comfortably inside the 1033px minimum content width at 1081px). Below the
+   desktop breakpoint it is free to wrap so nothing ever overflows. */
+@media (min-width: 1081px) {
+  .hero-line { white-space: nowrap; }
+}
+
+/* --------------------------------------------------------------- the grid ---- */
+/* MAP CARD (1fr, widest)            │ SUMMARY (340px, sticky)                    */
+/* .map-card and .summary are the ONLY children of main.layout — never nest.     */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+  max-width: var(--sheet, 1280px);
+  margin-inline: auto;
+  padding: 16px 24px 24px;
+}
+.map-card,
+.summary { min-width: 0; }
+
+.summary {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+/* ------------------------------------------------------------------ colophon */
+.colophon {
+  max-width: var(--sheet, 1280px);
+  margin: 16px auto 40px;
+  padding: 16px 24px 0;
+  border-top: 1px solid var(--rule, #dbd0b8);
+  color: var(--ink-soft, #5b6673);
+  font-size: var(--t-micro, 12px);
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------- breakpoint ---- */
+/* §6: 1081px — two columns → one. (640/420 are the phone theme, in mobile.css.) */
+@media (max-width: 1080px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .summary { position: static; top: auto; }
+}
+
+/* -------------------------------------------------------------------- motion - */
+/* §11: everything off under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .icon-btn { transition: none; }
+}
