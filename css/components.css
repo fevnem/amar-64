@@ -578,12 +578,16 @@ html.night .sheet::backdrop {
 /* --- labels: Bengali-first size, haloed so the stitch never eats them ------ */
 .labels text {
   font-family: var(--font-ui);
-  font-size: var(--t-micro);
+  /* --label-uu is set by js/map.js on the svg: the size the eye should see (12px,
+     14px on a narrow map) converted into the map's user units. One variable, so the
+     browser recalculates once and the metrics are never half-applied. */
+  font-size: var(--label-uu, var(--t-micro));
   font-weight: var(--fw-label);
   fill: var(--c-text);
   paint-order: stroke;
   stroke: var(--map-bg);
-  stroke-width: calc(var(--t-micro) * 0.45);
+  stroke-width: calc(var(--label-uu, var(--t-micro)) * 0.45);
+  stroke-linejoin: round;
   pointer-events: none;
 }
 .labels text.is-hidden { display: none; }

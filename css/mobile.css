@@ -90,7 +90,7 @@
   .map-wrap { position: relative; min-height: 52vh; }
 
   /* §6: only labels that fit are shown (chosen in js/map.js) — they are micro */
-  .labels text { font-size: var(--t-micro, 12px); }
+  .labels text { font-size: var(--label-uu, var(--t-label, 13px)); }
   .map-hint { margin: 8px 0 0; font-size: var(--t-label, 13px); }
   .about-box { padding: 8px 10px; }
 

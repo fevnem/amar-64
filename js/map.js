@@ -110,19 +110,11 @@
       "font-size": "12", "class": "map-label"
     });
     t.textContent = r.bn;
-    /* Owned here (not in CSS) so the policy travels with the map. var() keeps it
-       theme-reactive: the halo follows the paper/map colour when night mode flips. */
-    var s = t.style;
-    s.fontSize = "var(--t-micro, 12px)";
-    s.fontFamily = "var(--font-ui, \"Noto Sans Bengali\", \"Noto Sans\", system-ui, sans-serif)";
-    s.fontWeight = "700";
-    s.fill = "var(--ink, #1a2430)";
-    s.paintOrder = "stroke";
-    s.stroke = "var(--label-halo, var(--map-bg, var(--paper, #f9f4e8)))";
-    s.strokeWidth = "calc(var(--t-micro, 12px) * 0.3)";
-    s.strokeLinejoin = "round";
-    s.pointerEvents = "none";
-    s.textAnchor = "middle";
+    /* The label's LOOK belongs to CSS (css/components.css: `.labels text`), because the
+       size has to come from --label-uu, the variable this module sets on the svg from the
+       map's real render scale. Setting font-size inline here — as this used to — wins over
+       the stylesheet and silently kills that scaling, which is how a phone ended up with
+       4px district names. Only geometry and identity are set here. */
     if (on) on.appendChild(t);
     return t;
   }
@@ -282,7 +274,14 @@
   function scheduleDeclutter() {
     if (!m || m._pending) return;
     m._pending = true;
-    var run = function () { m && (m._pending = false); declutter(); };
+    var run = function () {
+      if (!m) return;
+      m._pending = false;
+      /* a label-size change needs one frame before getBBox reports the new metrics;
+         measuring early is what let two names collide intermittently */
+      if (m.settleFrames > 0) { m.settleFrames -= 1; scheduleDeclutter(); return; }
+      declutter();
+    };
     (w.requestAnimationFrame || w.setTimeout)(run);
   }
   /* SVG text scales with the viewBox, so a flat 12 user units renders ~10px on a
@@ -300,14 +299,14 @@
     var target = box.width < 520 ? 14 : 12;
     var uu = Math.round(Math.max(9, Math.min(44, target / scale)) * 100) / 100;   /* ≈ --t-micro / --t-label on screen */
     if (m.labelUnits === uu && m.labelScale === scale) return false;           /* nothing to do */
-    m.order.forEach(function (slug) {
-      var t = m.labels[slug];
-      if (!t) return;
-      t.style.fontSize = uu.toFixed(2) + "px";
-      t.style.strokeWidth = (uu * 0.45).toFixed(2) + "px";   /* a chunky halo: names stay readable over the red stitch */
-    });
+    /* ONE variable on the svg, not 64 inline styles: a single declaration recalculates
+       once, so the text metrics are never half-applied when we measure them. The halo
+       rides the same variable (css: calc(var(--label-uu) * .45)), so names stay readable
+       over the red stitch. */
+    m.svg.style.setProperty("--label-uu", uu.toFixed(2) + "px");
     m.labelUnits = uu;
     m.labelScale = scale;
+    void m.svg.getBoundingClientRect();                       /* flush style + layout now */
     return true;                                                               /* sizes changed */
   }
 
@@ -315,7 +314,7 @@
     if (!m || !m.order.length) return;
     /* a style change invalidates the text metrics, and a getBBox in the same turn can
        still return the old width — so size first, then measure on the next frame */
-    if (sizeLabels()) { scheduleDeclutter(); return; }
+    if (sizeLabels()) { m.settleFrames = 1; scheduleDeclutter(); return; }
     var first = labelBox(m.order[0]);
     if (!first || first.w <= 2 * LABEL_PAD) return;              /* not laid out yet — every box would read 0 */
     var placed = [];
