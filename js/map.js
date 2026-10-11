@@ -187,7 +187,11 @@
     findTip();
 
     scheduleDeclutter();
-    if (d.fonts && d.fonts.ready) d.fonts.ready.then(scheduleDeclutter);
+    if (d.fonts && d.fonts.ready) d.fonts.ready.then(function () { m && (m.stabilize = 3); scheduleDeclutter(); });
+    if (d.fonts && d.fonts.addEventListener) {
+      /* a later subset can swap in (font-display: swap) and change every width */
+      d.fonts.addEventListener("loadingdone", function () { m && (m.stabilize = 3); scheduleDeclutter(); });
+    }
 
     return A64M;
   }
@@ -314,9 +318,29 @@
     if (!m || !m.order.length) return;
     /* a style change invalidates the text metrics, and a getBBox in the same turn can
        still return the old width — so size first, then measure on the next frame */
-    if (sizeLabels()) { m.settleFrames = 1; scheduleDeclutter(); return; }
+    if (sizeLabels()) { m.stabilize = 3; m.settleFrames = 1; scheduleDeclutter(); return; }
     var first = labelBox(m.order[0]);
     if (!first || first.w <= 2 * LABEL_PAD) return;              /* not laid out yet — every box would read 0 */
+    /* The metrics are only trustworthy once two consecutive passes agree on them. A font
+       swap (font-display: swap) or a half-applied size can land between measuring and
+       placing, which is how two names ended up riding on each other intermittently — green
+       on one run, red on the next, and only on the deployed site. Converge, don't hope. */
+    var sigParts = [];
+    for (var si = 0; si < m.order.length; si++) {
+      var sb = labelBox(m.order[si]);
+      sigParts.push(sb ? [Math.round(sb.x * 10), Math.round(sb.y * 10), Math.round(sb.w * 10), Math.round(sb.h * 10)].join(",") : "-");
+    }
+    var sig = sigParts.join(";");
+    if (m.stabilize === undefined) m.stabilize = 3;
+    if (sig !== m.lastSig && m.stabilize > 0) {
+      m.lastSig = sig;
+      m.stabilize -= 1;
+      m.settleFrames = 1;
+      scheduleDeclutter();
+      return;
+    }
+    m.lastSig = sig;
+    m.stabilize = 3;
     var placed = [];
     m.districts.slice().sort(function (a, b) { return b.area_km2 - a.area_km2; }).forEach(function (r) {
       var t = m.labels[r.slug], box = labelBox(r.slug);
@@ -334,6 +358,29 @@
       if (ok || forced) placed.push(box);
     });
     A64M.labelsPlaced = placed.length;
+
+    /* Self-audit. Everything above measured boxes that may have been a frame stale, so
+       re-measure the names we just decided to show and enforce the invariant for real.
+       This is the belt to the convergence loop's braces: the rule is "no two visible
+       district names touch", and it must hold on the deployed site, not just locally. */
+    var shown = [];
+    for (var oi = 0; oi < m.order.length; oi++) {
+      var sl = m.order[oi], st = m.labels[sl];
+      if (!st || st.classList.contains("is-hidden")) continue;
+      if (st.getAttribute("data-force") === "1" || sl === m.active || sl === m.hovered) continue;   /* revealed names sit on top, by design */
+      var sbx = labelBox(sl);
+      if (!sbx) continue;
+      for (var pi = 0; pi < shown.length; pi++) {
+        if (intersects(sbx, shown[pi].box)) {
+          var mine = m.bySlug[sl], theirs = m.bySlug[shown[pi].slug];
+          var loser = (mine && theirs && mine.area_km2 < theirs.area_km2) ? sl : shown[pi].slug;
+          var lt = m.labels[loser];
+          if (lt) lt.classList.add("is-hidden");
+          if (loser === sl) { sbx = null; break; }
+        }
+      }
+      if (sbx) shown.push({ slug: sl, box: sbx });
+    }
   }
 
   /* --------------------------------------------------------------- legend ---- */
@@ -561,6 +608,8 @@
     labelNode: function (slug) { return m ? m.labels[slug] : null; },
     setMode: setMode,
     active: function () { return m ? m.active : null; },
+    hovered: function () { return m ? m.hovered : null; },
+    revealed: function () { return m ? { active: m.active, hovered: m.hovered } : { active: null, hovered: null }; },
     focus: function (slug) { focusDistrict(slug, true); return A64M; },
     labelsPlaced: 0,
     placedCount: function () { return m ? A64M.labelsPlaced : 0; },
